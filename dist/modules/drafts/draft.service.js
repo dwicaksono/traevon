@@ -58,7 +58,7 @@ export class DraftService {
         return draft;
     }
     // -------------------------------------------------------------------------
-    // approveAndSync (Rule 3 — "Approve & Sync" Transaction Flow)
+    // approveAndSync ("Approve & Sync" Transaction Flow)
     // -------------------------------------------------------------------------
     /**
      * Atomically approves a draft and synchronizes it with the external source system.
@@ -104,7 +104,7 @@ export class DraftService {
                 },
             })
                 .where(eq(aiDrafts.id, input.draft_id));
-            // 4. Rule 4: Sync to source with idempotency-key (draft_id).
+            // 4. Sync to source with idempotency-key (draft_id).
             // If writeToSource throws, the transaction will roll back automatically.
             const { external_record_id } = await integrationClient.writeToSource(existing.id, existing.content);
             // 5. Success! Finalize the boundary transition.
