@@ -1,15 +1,12 @@
 import { serve } from "@hono/node-server";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { draftsRouter } from "./api/v1/drafts.route.js";
-import { scalarReference } from "./api/docs/scalar.js";
 
 // ---------------------------------------------------------------------------
-// App
+// App Instance
 // ---------------------------------------------------------------------------
-
 const app = new OpenAPIHono();
 
-// --- Health check (Top priority for diagnostics) ---------------------------
+// --- Health Check (Immediate return to prevent Gateway Timeouts) ------------
 app.get("/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
 
 // --- Global Error Handler ----------------------------------------------------
@@ -26,6 +23,12 @@ app.onError((err, c) => {
   }, 500);
 });
 
+// --- Heavy Imports (Deferred to avoid boot-time hangs) -----------------------
+// Note: In serverless, these are still resolved at start, but placing them 
+// after basic routes can sometimes help with initialization order issues.
+import { draftsRouter } from "./api/v1/drafts.route.js";
+import { scalarReference } from "./api/docs/scalar.js";
+
 // --- API v1 routes ---------------------------------------------------------
 app.route("/api/v1/drafts", draftsRouter);
 
@@ -35,10 +38,7 @@ app.doc("/doc", {
   info: {
     title: "Traevon — AI Knowledge Platform",
     version: "1.0.0",
-    description:
-      "Production-ready API with a Controlled Knowledge Boundary. " +
-      "AI output always lands as a Draft first. " +
-      "Write-through to source requires authorized approval.",
+    description: "Production-ready API with a Controlled Knowledge Boundary.",
   },
 });
 
@@ -46,16 +46,12 @@ app.doc("/doc", {
 app.get("/reference", scalarReference);
 
 // ---------------------------------------------------------------------------
-// Server (only for non-Vercel/Local dev environments)
+// Runtime
 // ---------------------------------------------------------------------------
-
-const PORT = Number(process.env["PORT"] ?? 3000);
-
 if (process.env["NODE_ENV"] !== "production") {
+  const PORT = Number(process.env["PORT"] ?? 3000);
   serve({ fetch: app.fetch, port: PORT }, (info) => {
     console.log(`🚀 Server running at http://localhost:${info.port}`);
-    console.log(`📖 API docs at     http://localhost:${info.port}/reference`);
-    console.log(`📄 OpenAPI spec at http://localhost:${info.port}/doc`);
   });
 }
 
