@@ -9,6 +9,9 @@ import { scalarReference } from "./api/docs/scalar.js";
 
 const app = new OpenAPIHono();
 
+// --- Health check (Top priority for diagnostics) ---------------------------
+app.get("/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
+
 // --- Global Error Handler ----------------------------------------------------
 app.onError((err, c) => {
   console.error(`[App Error] ${err.message}`, {
@@ -41,9 +44,6 @@ app.doc("/doc", {
 
 // --- Scalar interactive docs -----------------------------------------------
 app.get("/reference", scalarReference);
-
-// --- Health check ----------------------------------------------------------
-app.get("/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
 
 // ---------------------------------------------------------------------------
 // Server (only for non-Vercel/Local dev environments)
