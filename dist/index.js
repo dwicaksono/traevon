@@ -6,6 +6,19 @@ import { scalarReference } from "./api/docs/scalar.js";
 // App
 // ---------------------------------------------------------------------------
 const app = new OpenAPIHono();
+// --- Global Error Handler ----------------------------------------------------
+app.onError((err, c) => {
+    console.error(`[App Error] ${err.message}`, {
+        stack: err.stack,
+        path: c.req.path,
+        method: c.req.method,
+    });
+    return c.json({
+        error: "Internal Server Error",
+        message: err.message,
+        code: "UNHANDLED_EXCEPTION"
+    }, 500);
+});
 // --- API v1 routes ---------------------------------------------------------
 app.route("/api/v1/drafts", draftsRouter);
 // --- OpenAPI JSON spec (consumed by Scalar) --------------------------------

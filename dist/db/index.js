@@ -5,12 +5,12 @@ import * as draftsSchema from "./schemas/drafts.js";
 // Supabase Postgres connection via postgres.js
 // ---------------------------------------------------------------------------
 const DATABASE_URL = process.env["DATABASE_URL"];
-if (!DATABASE_URL) {
-    throw new Error("DATABASE_URL environment variable is not set.");
+if (!DATABASE_URL && process.env["NODE_ENV"] === "production") {
+    console.error("❌ CRITICAL: DATABASE_URL environment variable is not set!");
 }
 // `prepare: false` is required when using Supabase's connection pooler
 // in "Transaction" pool mode. We also limit max connections for serverless.
-const client = postgres(DATABASE_URL, {
+const client = postgres(DATABASE_URL || "postgres://localhost:5432/placeholder_to_prevent_startup_crash", {
     prepare: false,
     max: 1, // High concurrency in serverless can exhaust DB connections
     idle_timeout: 20, // Close idle connections faster
