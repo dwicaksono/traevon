@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "npx tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
