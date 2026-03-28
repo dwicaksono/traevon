@@ -1,0 +1,1 @@
+ALTER TABLE "ai_drafts" ALTER COLUMN "target_record_id" SET DATA TYPE text;
