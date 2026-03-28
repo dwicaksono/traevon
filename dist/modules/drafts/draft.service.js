@@ -35,7 +35,7 @@ export class DraftService {
         };
     }
     // -------------------------------------------------------------------------
-    // createDraft (Rule 2)
+    // createDraft
     // -------------------------------------------------------------------------
     /**
      * Persists a new AI-generated draft with status `DRAFT_PENDING`.

@@ -34,7 +34,7 @@ app.doc("/doc", {
     version: "1.0.0",
     description:
       "Production-ready API with a Controlled Knowledge Boundary. " +
-      "AI output always lands as a Draft first (Rule 2). " +
+      "AI output always lands as a Draft first. " +
       "Write-through to source requires authorized approval.",
   },
 });
