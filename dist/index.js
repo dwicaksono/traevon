@@ -3,10 +3,8 @@ import { app } from "./app.js";
 // ---------------------------------------------------------------------------
 // Runtime
 // ---------------------------------------------------------------------------
-if (process.env["NODE_ENV"] !== "production") {
-    const PORT = Number(process.env["PORT"] ?? 3000);
-    serve({ fetch: app.fetch, port: PORT }, (info) => {
-        console.log(`🚀 Server running at http://localhost:${info.port}`);
-    });
-}
+const PORT = Number(process.env["PORT"] ?? 3000);
+serve({ fetch: app.fetch, port: PORT }, (info) => {
+    console.log(`🚀 Server running at http://localhost:${info.port}`);
+});
 export default app;
